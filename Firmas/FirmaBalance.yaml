@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  description: API para simular Obtener balance
+  version: "1.0.0"
+  title: Obtener Balance
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /balance:
+    post:
+      summary: Obtiene el balance de una cuenta
+      description: Ontiene el balance de una cuenta
+      parameters:
+        - in: header
+          name: Content-Type
+          schema:
+            type: string
+            example: "application/json"
+          description: "Cabecera para indicar que el contenido a negociar es Json"
+          required: true
+        - in: header
+          name:  Transaction-Tracker
+          schema:
+            type: string
+            format: uuid
+            example: "11115390600003062472"
+          description: "ID para trazabilidad de la transacción ante logs. Debe ser proporcionado el front. Se debe usar el mismo TRUNID legacy y ser único por transacción."
+          required: true
+        - in: header
+          name: Session-Tracker
+          schema:
+            type: string
+            format: uuid
+            example: "15980943-5fcd-4423-a948-b015452d7479"
+          description: "ID para trazabilidad de la sesión. Debe ser proporcionado por el front. Se debe enviar el correspondiente a la sesion de usuario activa."
+          required: true
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            format: utf-8
+            example: "1eyJhbGciOiJub251ln0.eyJpc3MiOiJqb2UiLAOkiCj.4MTk2=DASDQo"
+          description: "Token JWT/JWS con la informacion de session-Tracker, ClientId, ClientType"
+          required: true
+        - in: header
+          name: "Channel"
+          schema:
+            type: string
+            example: "APP"
+          description: "Identificador del canal que esta usando el servicio."
+          required: true
+        - in: header
+          name: "Date"
+          schema:
+            type: string
+            format: utf-8
+            example: "2019/08/23"
+          description: "Información de la fecha actual del front, en la que se envió la petición al servicio."
+          required: true
+        - in: header
+          name: "Date-time"
+          schema:
+            type: string
+            format: utf-8
+            example: "15:59:00"
+          description: "Información de la hora actual del front, en la que se envió la petición al servicio en formato 24h"
+          required: true
+        - in: header
+          name: "Ip"
+          schema:
+            type: string
+            example: "192.168.164.25"
+          description: "Ip del dispositivo en el cual se generó la petición."
+          required: true
+        - in: header
+          name: "ClientID"
+          schema:
+            type: string
+            example: "10095928"
+          description: "Documento de identificación del cliente que realiza la petición."
+          required: true
+        - in: header
+          name: "ClientType"
+          schema:
+            type: string
+            example: "CC"
+          description: "Tipo de Documento de identificación del cliente que realiza la petición."
+          required: true
+
+      requestBody:
+        required: true
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/account'
+
+      responses:
+        '200':
+          description: balance devuelto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/balance'
+
+        '400':
+          description: 'invalid input, object invalid'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: an existing item already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: "Mensaje de error por defecto"
+          content:
+            application/vnd.bancolombia.v2+json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    $ref: "#/components/schemas/Error"
+
+
+components:
+  schemas:
+    account:
+      type: object
+      required:
+        - type
+        - number
+      properties:
+        type:
+          type: string
+          example: "CUENTA_DE_AHORRO"
+          maxLength: 50
+        number:
+          type: string
+          example: "21476523490"
+          maxLength: 16
+
+    accountBalance:
+      type: object
+      required:
+        - type
+        - number
+        - balances
+      properties:
+        type:
+          type: string
+          example: "CUENTA_DE_AHORRO"
+          maxLength: 50
+        number:
+          type: string
+          example: "21476523490"
+          maxLength: 16
+        balances:
+          $ref: '#/components/schemas/balance'
+
+    balance:
+      type: object
+      required:
+       - available
+       - availableOverdraftBalance
+       - overdraftValue
+       - availableOverdraftQuota
+       - cash
+       - unavailableClearing
+       - receivable
+       - blocked
+       - unavailableStartDay
+       - cashStartDay
+       - pockets
+       - remittanceQuota
+       - agreedRemittanceQuota
+       - remittanceQuotaUsage
+       - normalInterest
+       - suspensionInterest
+      properties:
+        available:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        availableOverdraftBalance:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        overdraftValue:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        availableOverdraftQuota:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        cash:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        unavailableclearing:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        receivable:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        blocked:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        unavailableStartDay:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        cashStartDay:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        pockets:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        remittanceQuota:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        agreedRemittanceQuota:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        remittanceQuotaUsage:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        normalInterest:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+        suspensionInterest:
+          type: number
+          format: float
+          example: 25000000
+          maxLength: 20
+          minLength: 5
+
+    Error:
+      type: object
+      description: Estructura general de errores
+      properties:
+        code:
+          description: Codigo de la excepcion
+          type: string
+          example: 401
+        description:
+          description: Descripcion de la excepcion
+          type: string
+          example: Lo sentimos, tenemos inconvenientes con nuestros sistemas, nuestro equipo se encuentra trabajando
+            para brindarte una solución.

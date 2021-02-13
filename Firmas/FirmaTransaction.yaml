@@ -1,0 +1,340 @@
+openapi: 3.0.0
+info:
+  description: API para simular Obtener transacciones
+  version: "1.0.0"
+  title: Obtener Transacciones
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /transactions:
+    post:
+      summary: Obtiene las transacciones de una cuenta
+      description: Obtiene las transacciones de una cuenta
+      parameters:
+        - in: header
+          name:  Transaction-Tracker
+          schema:
+            type: string
+            format: uuid
+            example: "11115390600003062472"
+          description: "ID para trazabilidad de la transacción ante logs. Debe ser proporcionado el front. Se debe usar el mismo TRUNID legacy y ser único por transacción."
+          required: true
+        - in: header
+          name: Session-Tracker
+          schema:
+            type: string
+            format: uuid
+            example: "15980943-5fcd-4423-a948-b015452d7479"
+          description: "ID para trazabilidad de la sesión. Debe ser proporcionado por el front. Se debe enviar el correspondiente a la sesion de usuario activa."
+          required: true
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            format: utf-8
+            example: "1eyJhbGciOiJub251ln0.eyJpc3MiOiJqb2UiLAOkiCj.4MTk2=DASDQo"
+          description: "Token JWT/JWS con la informacion de session-Tracker, ClientId, ClientType"
+          required: true
+        - in: header
+          name: "Channel"
+          schema:
+            type: string
+            example: "APP"
+          description: "Identificador del canal que esta usando el servicio."
+          required: true
+        - in: header
+          name: "Date"
+          schema:
+            type: string
+            format: utf-8
+            example: "2019/08/23"
+          description: "Información de la fecha actual del front, en la que se envió la petición al servicio."
+          required: true
+        - in: header
+          name: "Date-time"
+          schema:
+            type: string
+            format: utf-8
+            example: "15:59:00"
+          description: "Información de la hora actual del front, en la que se envió la petición al servicio en formato 24h"
+          required: true
+        - in: header
+          name: "Ip"
+          schema:
+            type: string
+            example: "192.168.164.25"
+          description: "Ip del dispositivo en el cual se generó la petición."
+          required: true
+        - in: header
+          name: "ClientID"
+          schema:
+            type: string
+            example: "10095928"
+          description: "Documento de identificación del cliente que realiza la petición."
+          required: true
+        - in: header
+          name: "ClientType"
+          schema:
+            type: string
+            example: "CC"
+          description: "Tipo de Documento de identificación del cliente que realiza la petición."
+          required: true
+
+      requestBody:
+        required: true
+        description: ""
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - pagination
+              - account
+              properties:
+                pagination:
+                  $ref: '#/components/schemas/pagination'
+                account:
+                  $ref: '#/components/schemas/account'
+
+
+      responses:
+        '200':
+          description: transaccion devuelta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transactions'
+
+        '400':
+          description: 'invalid input, object invalid'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: an existing item already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+        default:
+          description: "Mensaje de error por defecto"
+          content:
+            application/vnd.bancolombia.v2+json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    $ref: "#/components/schemas/Error"
+
+
+components:
+  schemas:
+    pagination:
+      type: object
+      required:
+        - size
+        - key
+      properties:
+        size:
+          type: number
+          example: 30
+          maxLength: 2
+          minLength: 1
+        key:
+          type: number
+          example: 1
+          maxLength: 3
+          minLength: 1
+
+    account:
+      type: object
+      required:
+        - type
+        - number
+        - transaction
+      properties:
+        type:
+          type: string
+          example: "CUENTA_DE_AHORRO"
+          maxLength: 50
+        number:
+          type: string
+          example: "21476523490"
+          maxLength: 16
+        transaction:
+          $ref: '#/components/schemas/transaction'
+
+    transaction:
+      type: object
+      required:
+        - startDate
+        - endDate
+      properties:
+        startDate:
+          type: string
+          example: "2020-01-01"
+        endDate:
+          type: string
+          example: "2020-01-31"
+        minAmount:
+          type: number
+          format: float
+          maxLength: 20
+          minLength: 5
+          example: 10000.0000
+        maxAmount:
+          format: float
+          maxLength: 20
+          minLength: 5
+          example: 10000.0000
+        type:
+          type: string
+          example: "DEBITO"
+        checkNumber:
+          type: string
+          maxLength: 16
+          minLength: 1
+        group:
+          type: string
+          maxLength: 2
+          minLength: 1
+          example: "16"
+        description:
+          type: string
+          maxLength: 100
+          minLength: 1
+        office:
+          $ref: '#/components/schemas/office'
+
+    office:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "2005678"
+          maxLength: 8
+          minLength: 1
+        name:
+          type: string
+          example: "2005678"
+          maxLength: 50
+          minLength: 1
+
+    transactions:
+      type: object
+      required:
+       - _responseSize
+       - _flagMoreRecords
+       - transaction
+      properties:
+        _responseSize:
+          type: number
+          maxLength: 2
+          minLength: 1
+          example: 12
+        _flagMoreRecords:
+          type: boolean
+        transaction:
+          type: array
+          uniqueItems: true
+          items:
+            type: "object"
+            required:
+              - transactionResponse
+            properties:
+              transactionResponse:
+                $ref: '#/components/schemas/transactionResponse'
+
+    transactionResponse:
+      type: object
+      required:
+       - id
+       - postedDate
+       - description
+       - amount
+       - type
+       - office
+      properties:
+        id:
+          type: string
+          example: "8316"
+          minLength: 1
+          maxLength: 6
+        postedDate:
+          type: string
+          example: "2020-03-01"
+        description:
+          type: string
+          example: "Abono preautorizado"
+          minLength: 1
+          maxLength: 50
+        amount:
+          type: string
+          example: "10000000"
+          minLength: 1
+          maxLength: 20
+        type:
+          type: string
+          example: "DEBITO"
+        reference1:
+          type: string
+          maxLength: 50
+        reference2:
+          type: string
+          maxLength: 50
+        reference3:
+          type: string
+          maxLength: 50
+        checkNumber:
+          type: string
+          maxLength: 16
+        office:
+          $ref: '#/components/schemas/office'
+        relatedTransferAccount:
+          $ref: '#/components/schemas/relatedTransferAccount'
+
+
+    relatedTransferAccount:
+      type: object
+      required:
+       - type
+       - number
+       - customer
+      properties:
+        type:
+          type: string
+          example: "CUENTA_DE_AHORRO"
+        number:
+          type: string
+          minLength: 1
+          maxLength: 16
+        customer:
+          $ref: '#/components/schemas/customer'
+  
+    customer:
+      type: object
+      required:
+       - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+
+    Error:
+      type: object
+      description: Estructura general de errores
+      properties:
+        code:
+          description: Codigo de la excepcion
+          type: string
+          example: 401
+        description:
+          description: Descripcion de la excepcion
+          type: string
+          example: Lo sentimos, tenemos inconvenientes con nuestros sistemas, nuestro equipo se encuentra trabajando
+            para brindarte una solución.
