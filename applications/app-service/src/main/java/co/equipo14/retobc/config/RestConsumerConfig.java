@@ -5,7 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class UseCaseConfig {
+public class RestConsumerConfig {
+
     @Bean
     public SaldosYMovimientosUseCase getSaldosYMovimientosUseCase(){
         return new SaldosYMovimientosUseCase();

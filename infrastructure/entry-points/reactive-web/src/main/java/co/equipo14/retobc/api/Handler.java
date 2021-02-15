@@ -10,10 +10,10 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class Handler {
-private final SaldosYMovimientosUseCase saldosYMovimientosUseCase;
+    private final SaldosYMovimientosUseCase saldosYMovimientosUseCase;
 
     public Mono<ServerResponse> listenPOSTUseCase(ServerRequest serverRequest) {
 //        Mono<SaldosYMovimientosUseCase> request = saldosYMovimientosUseCase.;
-        return ServerResponse.ok().body("", String.class);
+        return ServerResponse.ok().body(saldosYMovimientosUseCase.getSaldosYMovimientos(), String.class);
     }
 }
