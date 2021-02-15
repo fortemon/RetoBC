@@ -12,21 +12,20 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class SaldosConsumer // implements Gateway from domain
+public class SaldosConsumer
 {
     @Autowired
     @Qualifier("Saldos")
     private WebClient client;
 
-
     public Mono<AccountBalance> getSaldos(Transactions request) {
 
-        AccountRQ saldosRequest = AccountRQ.
+        AccountRQ balanceRequest = AccountRQ.builder()
+                .type(request.getAccount().getType())
+                .number(request.getAccount().getNumber())
+                .build();
 
-        return client
-            .post()
-            .body(Mono.just(request), ObjectRequest.class)
-            .retrieve()
-            .bodyToMono(ObjectResponse.class);
+        return client.post().body(Mono.just(balanceRequest), AccountRQ.class).retrieve().bodyToMono(AccountBalance.class);
+
     }
 }

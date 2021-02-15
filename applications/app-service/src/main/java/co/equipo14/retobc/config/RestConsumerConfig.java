@@ -1,5 +1,7 @@
 package co.equipo14.retobc.config;
 
+import co.equipo14.retobc.model.account.gateways.BalanceGateway;
+import co.equipo14.retobc.usecase.saldosymovimientos.SaldosYMovimientosUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,4 +33,8 @@ public class RestConsumerConfig {
             .build();
     }
 
+    @Bean
+    public SaldosYMovimientosUseCase getSaldosYMovimientosUseCase(BalanceGateway balanceGateway){
+        return new SaldosYMovimientosUseCase(balanceGateway);
+    }
 }
