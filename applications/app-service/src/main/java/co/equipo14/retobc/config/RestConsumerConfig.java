@@ -9,13 +9,24 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class RestConsumerConfig {
 
-    @Value("${adapter.restconsumer.url}")
-    private String url;
+    @Value("${adapter.saldos.url}")
+    private String saldosUrl;
+    @Value("${adapter.movimientos.url}")
+    private String movimientosUrl;
 
-    @Bean
-    public WebClient getWebClient() {
+
+    @Bean(name="Saldos")
+    public WebClient getWebClientSaldos() {
         return WebClient.builder()
-            .baseUrl(url)
+            .baseUrl(saldosUrl)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+            .build();
+    }
+
+    @Bean(name="Movimientos")
+    public WebClient getWebClientMovimientos() {
+        return WebClient.builder()
+            .baseUrl(saldosUrl)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
             .build();
     }
