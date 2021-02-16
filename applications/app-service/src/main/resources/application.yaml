@@ -12,5 +12,7 @@ spring:
   profiles:
     include: null
 adapter:
-  restconsumer:
+  saldos:
+    url: "https://rough-glitter-5481.getsandbox.com:443/balance"
+  movimientos:
     url: "http://localhost:8080/dummy"
