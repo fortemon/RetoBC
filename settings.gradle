@@ -12,3 +12,5 @@ include ':saldos-ymovimientos-service'
 project(':saldos-ymovimientos-service').projectDir = file('./infrastructure/driven-adapters/saldos-ymovimientos-service')
 include ':rest-consumer'
 project(':rest-consumer').projectDir = file('./infrastructure/driven-adapters/rest-consumer')
+include 'Test'
+

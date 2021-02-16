@@ -13,6 +13,6 @@ spring:
     include: null
 adapter:
   saldos:
-    url: "https://getsandbox.com/sandboxes/rough-glitter-548/balance"
+    url: "https://rough-glitter-5481.getsandbox.com:443/balance"
   movimientos:
     url: "http://localhost:8080/dummy"

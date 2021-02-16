@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder(toBuilder = true)
 public class AccountRQ {
     private String type;

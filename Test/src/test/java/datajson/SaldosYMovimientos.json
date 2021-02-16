@@ -1,0 +1,10 @@
+{
+  "pagination": {
+    "size": 30,
+    "key": 1
+  },
+  "account": {
+    "type": "CUENTA_DE_AHORRO",
+    "number": "21476523490"
+  }
+}

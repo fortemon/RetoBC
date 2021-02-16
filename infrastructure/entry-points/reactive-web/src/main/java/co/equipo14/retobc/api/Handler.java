@@ -1,8 +1,6 @@
 package co.equipo14.retobc.api;
 
-import co.equipo14.retobc.model.account.AccountRQ;
 import co.equipo14.retobc.model.account.balance.AccountBalance;
-import co.equipo14.retobc.model.account.balance.Balances;
 import co.equipo14.retobc.model.account.transactions.Transactions;
 import co.equipo14.retobc.usecase.saldosymovimientos.SaldosYMovimientosUseCase;
 import lombok.RequiredArgsConstructor;

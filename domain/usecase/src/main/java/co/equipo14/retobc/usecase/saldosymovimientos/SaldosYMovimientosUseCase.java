@@ -12,7 +12,7 @@ public class SaldosYMovimientosUseCase {
 
     public Mono<AccountBalance> getSaldosYMovimientos(Transactions request){
         return balanceGateway.getBalance(request).flatMap(response -> {
-            return Mono.just(AccountBalance.builder().balances(response.getBalances()).build());
+            return Mono.just(AccountBalance.builder().balances(response).build());
         });
     }
 
